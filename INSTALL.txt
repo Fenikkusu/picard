@@ -83,3 +83,9 @@ the Source Tree".  Afterward you can run the tests using setup.py:
   python setup.py test
 
 Alternatively, use a test runner such as nose.
+
+For Testing in Intellij IDEA:
+  Add new 'Python tests -> Unittests'
+  Set Folder to './test'
+  Set Pattern to '__init__.py,test_*.py'
+  Set Working Directory to Project Root
