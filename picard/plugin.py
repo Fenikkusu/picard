@@ -271,3 +271,38 @@ class PluginFunctions:
                                           reverse=True):
             for function in functions:
                 function(*args, **kwargs)
+
+class PluginProcessors:
+    def __init__(self):
+        self.processors = {}
+
+    def has_processor(self, ident):
+        return ident in self.processors
+
+    def set_processor(self, ident, processor):
+        self.processors[ident] = processor
+
+    def get_processor(self, ident):
+        if not self.has_processor(ident):
+            self.set_processor(ident, PluginFunctions())
+
+        return self.processors[ident]
+
+    def register(self, ident, callback, priority=PluginPriority.NORMAL):
+        log.debug("Plugin Registered For %r With Priority Of %r For Callback %r", ident, priority, callback)
+        self.get_processor(ident).register(callback.__module__, callback, priority)
+
+    def run(self, ident, *args, **kwargs):
+        log.debug("Runnning Processor %r with %r and %r", ident, args, kwargs)
+        self.get_processor(ident).run(*args, **kwargs)
+
+
+_plugin_processors = PluginProcessors()
+# register_processor = _plugin_processors.register
+# run_processor = _plugin_processors.run
+
+def register_processor(ident, callback, priority=PluginPriority.NORMAL):
+    _plugin_processors.register(ident, callback, priority)
+
+def run_processor(ident, *args, **kwargs):
+    _plugin_processors.run(ident, args, kwargs)
