@@ -48,6 +48,9 @@ from picard.util.textencoding import (
 )
 from picard.util.filenaming import make_short_filename
 from picard.util.tags import PRESERVED_TAGS
+from picard.plugin import run_processor
+
+FILE_PLUGIN_PROCESSOR="file_plugin_processor"
 
 
 class File(QtCore.QObject, Item):
@@ -373,6 +376,7 @@ class File(QtCore.QObject, Item):
             self.parent = parent
             self.parent.add_file(self)
             self.tagger.acoustidmanager.update(self, self.metadata['musicbrainz_recordingid'])
+            run_processor(FILE_PLUGIN_PROCESSOR + "_move", self)
 
     def _move(self, parent):
         if parent != self.parent:
@@ -381,6 +385,7 @@ class File(QtCore.QObject, Item):
                 self.parent.remove_file(self)
             self.parent = parent
             self.tagger.acoustidmanager.update(self, self.metadata['musicbrainz_recordingid'])
+            run_processor(FILE_PLUGIN_PROCESSOR + "_move", self)
 
     def supports_tag(self, name):
         """Returns whether tag ``name`` can be saved to the file."""
