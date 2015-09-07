@@ -298,8 +298,6 @@ class PluginProcessors:
 
 
 _plugin_processors = PluginProcessors()
-# register_processor = _plugin_processors.register
-# run_processor = _plugin_processors.run
 
 def register_processor(ident, callback, priority=PluginPriority.NORMAL):
     _plugin_processors.register(ident, callback, priority)
