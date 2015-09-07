@@ -19,7 +19,7 @@
 # USA.
 from PyQt4.QtCore import QObject
 from picard import config, log
-from picard.plugin import PluginFunctions, PluginPriority
+from picard.plugin import run_processor, register_processor, PluginPriority
 from picard.similarity import similarity2
 from picard.util import (
     linear_combination_of_weights,
@@ -27,7 +27,6 @@ from picard.util import (
 from picard.mbxml import artist_credit_from_node
 
 MULTI_VALUED_JOINER = '; '
-
 
 class Metadata(dict):
 
@@ -292,24 +291,18 @@ class Metadata(dict):
         """
         self.apply_func(lambda s: s.strip())
 
-
-_album_metadata_processors = PluginFunctions()
-_track_metadata_processors = PluginFunctions()
-
-
 def register_album_metadata_processor(function, priority=PluginPriority.NORMAL):
     """Registers new album-level metadata processor."""
-    _album_metadata_processors.register(function.__module__, function, priority)
+    register_processor("album_metadata_processor", function, priority)
 
 
 def register_track_metadata_processor(function, priority=PluginPriority.NORMAL):
     """Registers new track-level metadata processor."""
-    _track_metadata_processors.register(function.__module__, function, priority)
-
+    register_processor("track_metadata_processor", function, priority)
 
 def run_album_metadata_processors(tagger, metadata, release):
-    _album_metadata_processors.run(tagger, metadata, release)
+    run_processor("album_metadata_processor", tagger, metadata, release)
 
 
 def run_track_metadata_processors(tagger, metadata, release, track):
-    _track_metadata_processors.run(tagger, metadata, track, release)
+    run_processor("track_metadata_processor", tagger, metadata, release, track)
