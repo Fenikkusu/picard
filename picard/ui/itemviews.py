@@ -27,9 +27,10 @@ from picard.cluster import Cluster, ClusterList, UnmatchedFiles
 from picard.file import File
 from picard.track import Track, NonAlbumTrack
 from picard.util import encode_filename, icontheme
-from picard.plugin import ExtensionPoint
+from picard.plugin import ExtensionPoint, run_processor
 from picard.ui.ratingwidget import RatingWidget
 from picard.ui.collectionmenu import CollectionMenu
+import traceback
 
 
 class BaseAction(QtGui.QAction):
@@ -558,6 +559,12 @@ class FileTreeView(BaseTreeView):
         self.setItemExpanded(self.clusters, True)
         self.tagger.cluster_added.connect(self.add_file_cluster)
         self.tagger.cluster_removed.connect(self.remove_file_cluster)
+
+        try:
+            run_processor("FileTreeView-Init", self)
+        except:
+            log.error("FileTreeView-Init : %s", traceback.format_exc())
+
 
     def add_file_cluster(self, cluster, parent_item=None):
         self.add_cluster(cluster, parent_item)

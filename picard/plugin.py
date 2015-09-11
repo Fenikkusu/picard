@@ -293,7 +293,7 @@ class PluginProcessors:
         self.get_processor(ident).register(callback.__module__, callback, priority)
 
     def run(self, ident, *args, **kwargs):
-        log.debug("Runnning Processor %r with %r and %r", ident, args, kwargs)
+        log.debug("Runnning Processor %r with %r and %r", ident, *args, **kwargs)
         self.get_processor(ident).run(*args, **kwargs)
 
 
